@@ -1,0 +1,39 @@
+name: Build FitPlus v189 Bazaar Clean APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'fp_v189_bazaar_clean.zip'
+      - '.github/workflows/build.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Build APK
+        run: |
+          test -f fp_v189_bazaar_clean.zip
+          rm -rf source release
+          mkdir -p source release
+          unzip -q fp_v189_bazaar_clean.zip -d source
+          cd source
+          gradle :app:assembleRelease --no-daemon --stacktrace
+          cd ..
+          cp source/app/build/outputs/apk/release/app-release.apk release/fitplus-v189-bazaar-clean-release.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fitplus-v189-bazaar-clean-apk
+          path: release/fitplus-v189-bazaar-clean-release.apk
+          if-no-files-found: error
