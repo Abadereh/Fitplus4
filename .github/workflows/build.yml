@@ -1,11 +1,11 @@
-name: Build FitPlus v189 Bazaar Clean APK
+name: Build FitPlus v190 Bazaar Strict Clean APK
 
 on:
   workflow_dispatch:
   push:
     branches: [ main ]
     paths:
-      - 'fp_v189_bazaar_clean.zip'
+      - 'fp_v190_bazaar_strict_clean.zip'
       - '.github/workflows/build.yml'
 
 jobs:
@@ -24,16 +24,16 @@ jobs:
           gradle-version: '8.13'
       - name: Build APK
         run: |
-          test -f fp_v189_bazaar_clean.zip
+          test -f fp_v190_bazaar_strict_clean.zip
           rm -rf source release
           mkdir -p source release
-          unzip -q fp_v189_bazaar_clean.zip -d source
+          unzip -q fp_v190_bazaar_strict_clean.zip -d source
           cd source
           gradle :app:assembleRelease --no-daemon --stacktrace
           cd ..
-          cp source/app/build/outputs/apk/release/app-release.apk release/fitplus-v189-bazaar-clean-release.apk
+          cp source/app/build/outputs/apk/release/app-release.apk release/fitplus-v190-bazaar-strict-clean-release.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: fitplus-v189-bazaar-clean-apk
-          path: release/fitplus-v189-bazaar-clean-release.apk
+          name: fitplus-v190-bazaar-strict-clean-apk
+          path: release/fitplus-v190-bazaar-strict-clean-release.apk
           if-no-files-found: error
